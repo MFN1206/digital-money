@@ -1,7 +1,7 @@
 import { EnvelopeSimple, LockSimple } from "phosphor-react";
-import ImageLogin from "./assets/secure-login-animate.svg";
+import ImageLogin from "../assets/secure-login-animate.svg";
 
-function App() {
+function LoginPage() {
   return (
     <div className="bg-blue-500 w-full h-screen flex">
       <div
@@ -65,4 +65,4 @@ function App() {
   );
 }
 
-export default App;
+export default LoginPage;
