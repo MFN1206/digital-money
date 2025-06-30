@@ -1,7 +1,14 @@
 import { EnvelopeSimple, LockSimple } from "phosphor-react";
 import ImageLogin from "../assets/secure-login-animate.svg";
+import { useNavigate } from "react-router";
 
 function LoginPage() {
+  let navigate = useNavigate();
+
+  function handleLogin() {
+    navigate("/dashboard");
+  }
+
   return (
     <div className="bg-blue-500 w-full h-screen flex">
       <div
@@ -29,7 +36,10 @@ function LoginPage() {
         <form className="w-full flex flex-col items-center justify-center gap-4">
           <div className="flex flex-col text-left w-3/5">
             <label htmlFor="email">Email</label>
-            <label htmlFor="email" className="border-2 border-gray-300 px-4 py-1 rounded-md flex items-center gap-2 focus-within:border-blue-500">
+            <label
+              htmlFor="email"
+              className="border-2 border-gray-300 px-4 py-1 rounded-md flex items-center gap-2 focus-within:border-blue-500"
+            >
               <EnvelopeSimple size={20} className="text-gray-400" />
               <input
                 type="email"
@@ -43,7 +53,10 @@ function LoginPage() {
 
           <div className="flex flex-col text-left w-3/5">
             <label htmlFor="password">Password</label>
-            <label htmlFor="password" className="border-2 border-gray-300 px-4 py-1 rounded-md flex items-center gap-2 focus-within:border-blue-500">
+            <label
+              htmlFor="password"
+              className="border-2 border-gray-300 px-4 py-1 rounded-md flex items-center gap-2 focus-within:border-blue-500"
+            >
               <LockSimple size={20} className="text-gray-400" />
               <input
                 type="password"
@@ -55,10 +68,9 @@ function LoginPage() {
             </label>
           </div>
 
-          <button className="text-white bg-blue-700 w-3/5 py-2 rounded-md cursor-pointer hover:bg-blue-800 hover:transform hover:scale-105 duration-300">
+          <button className="text-white bg-blue-700 w-3/5 py-2 rounded-md cursor-pointer hover:bg-blue-800 hover:transform hover:scale-105 duration-300" onClick={handleLogin}>
             Sign In
           </button>
-
         </form>
       </div>
     </div>
