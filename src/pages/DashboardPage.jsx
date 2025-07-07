@@ -5,11 +5,27 @@ import {
   TrashSimple,
 } from "phosphor-react";
 import Modal from "../components/Modal/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../components/Card/Card";
+import axios from "axios";
 
 function DashbordPage() {
   const [open, setOpen] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+
+  console.log(transactions);
+  async function getTransactions() {
+    const transactionsData = await axios.get(
+      "http://localhost:3000/transactions"
+    );
+
+    setTransactions(transactionsData.data);
+  }
+
+  // getTransactions();
+  useEffect(() => {
+    getTransactions();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -28,12 +44,27 @@ function DashbordPage() {
       </header>
       <main className="flex-1 container mx-auto py-8 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 -mt-24">
-          <Card title="Entradas" icon={<ArrowCircleUp className="text-green-500" size={32} />} amount="R$ 0,00" bgColor="bg-white" />
+          <Card
+            title="Entradas"
+            icon={<ArrowCircleUp className="text-green-500" size={32} />}
+            amount="R$ 0,00"
+            bgColor="bg-white"
+          />
 
-          <Card title="Saídas" icon={<ArrowCircleDown className="text-red-500" size={32} />} amount="R$ 0,00" bgColor="bg-white" />
+          <Card
+            title="Saídas"
+            icon={<ArrowCircleDown className="text-red-500" size={32} />}
+            amount="R$ 0,00"
+            bgColor="bg-white"
+          />
 
-          <Card title="Total" icon={<CurrencyDollar size={32} />} amount="R$ 0,00"  bgColor="bg-emerald-500" textColor="text-white" />
-
+          <Card
+            title="Total"
+            icon={<CurrencyDollar size={32} />}
+            amount="R$ 0,00"
+            bgColor="bg-emerald-500"
+            textColor="text-white"
+          />
         </div>
 
         <div className="overflow-x-auto mt-8">
@@ -49,23 +80,27 @@ function DashbordPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              <tr className="hover:bg-gray-50 bg-white">
-                <td className="px-6 py-4">Exemplo 1</td>
-                <td className="px-6 py-4 text-green-500 font-medium">
-                  R$ 1.000,00
-                </td>
-                <td className="px-6 py-4">Teste</td>
-                <td className="px-6 py-4">23/06/2025</td>
-                <td className="px-6 py-4">
-                  <button className="text-blue-500 hover:text-blue-700">
-                    <TrashSimple
-                      size={24}
-                      weight="fill"
-                      className="text-red-500"
-                    />
-                  </button>
-                </td>
-              </tr>
+              {transactions.map((transaction) => {
+                return (
+                  <tr className="hover:bg-gray-50 bg-white">
+                    <td className="px-6 py-4">{transaction.title}</td>
+                    <td className="px-6 py-4 text-green-500 font-medium">
+                      R$ {transaction.price}
+                    </td>
+                    <td className="px-6 py-4">{transaction.category}</td>
+                    <td className="px-6 py-4">{transaction.date}</td>
+                    <td className="px-6 py-4">
+                      <button className="text-blue-500 hover:text-blue-700">
+                        <TrashSimple
+                          size={24}
+                          weight="fill"
+                          className="text-red-500"
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
