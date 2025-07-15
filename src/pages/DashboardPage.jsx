@@ -7,7 +7,9 @@ import {
 import Modal from "../components/Modal/Modal";
 import { useEffect, useState } from "react";
 import Card from "../components/Card/Card";
-import axios from "axios";
+import axios, { all, Axios } from "axios";
+import { API_BASE_URL } from "../utils/constants";
+import DropdownOptions from "../components/DropdownOptions/DropdownOptions";
 
 function DashbordPage() {
   const [open, setOpen] = useState(false);
@@ -27,6 +29,27 @@ function DashbordPage() {
     getTransactions();
   }, []);
 
+  async function hanDeleteTransaction(id) {
+
+    //Pop up de confirmação
+    const consfirm = window.confirm("Tem certeza que deseja excluir essa transação?");
+
+    if (consfirm === false) {
+      return;
+    }
+
+    await axios.delete(API_BASE_URL + `/transactions/${id}`)
+  }
+
+  const allInputsSum = transactions.filter((transaction) => transaction.transactionType === "input").reduce((prev, curr) => {
+    return prev + parseFloat(curr.price);
+  }, 0);
+
+  const allOutputsSum = transactions.filter((transaction) => transaction.transactionType === "output").reduce((prev, curr) => {
+    return prev + parseFloat(curr.price);
+  }, 0);
+
+  const total = allInputsSum - allOutputsSum;
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="w-full bg-pink-700 py-6 pb-32 md:px-6">
@@ -41,27 +64,32 @@ function DashbordPage() {
             Nova transação
           </button>
         </div>
+        <div className="flex justify-end pt-4 md:mt-0">
+          <DropdownOptions />
+
+        </div>
+
       </header>
       <main className="flex-1 container mx-auto py-8 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 -mt-24">
           <Card
             title="Entradas"
             icon={<ArrowCircleUp className="text-green-500" size={32} />}
-            amount="R$ 0,00"
+            amount={allInputsSum}
             bgColor="bg-white"
           />
 
           <Card
             title="Saídas"
             icon={<ArrowCircleDown className="text-red-500" size={32} />}
-            amount="R$ 0,00"
+            amount={allOutputsSum}
             bgColor="bg-white"
           />
 
           <Card
             title="Total"
             icon={<CurrencyDollar size={32} />}
-            amount="R$ 0,00"
+            amount={total}
             bgColor="bg-emerald-500"
             textColor="text-white"
           />
@@ -80,9 +108,9 @@ function DashbordPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {transactions.map((transaction) => {
+              {transactions.map((transaction, index) => {
                 return (
-                  <tr className="hover:bg-gray-50 bg-white">
+                  <tr key={index} className="hover:bg-gray-50 bg-white">
                     <td className="px-6 py-4">{transaction.title}</td>
                     <td className="px-6 py-4 text-green-500 font-medium">
                       R$ {transaction.price}
@@ -95,6 +123,7 @@ function DashbordPage() {
                           size={24}
                           weight="fill"
                           className="text-red-500"
+                          onClick={() => hanDeleteTransaction(transaction.id)}
                         />
                       </button>
                     </td>
